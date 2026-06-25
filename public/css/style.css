@@ -1,0 +1,128 @@
+/* Legacy Styles - Updated for Modern Theme Compatibility */
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.container {
+    flex: 1;
+}
+
+/* Modern navbar styles are defined in navbar.ejs */
+
+.fa-compass {
+    color: var(--primary-500);
+    font-size: 2rem;
+}
+
+.nav-link {
+    color: var(--neutral-700) !important;
+}
+
+/* Modern footer styles are defined in footer.ejs */
+
+/* Listing Card Styles - Legacy Compatibility */
+.listing-card {
+    border: none !important;
+    margin-bottom: 2rem;
+}
+
+.card-img-top {
+    border-radius: var(--radius-lg) !important;
+    width: 100% !important;
+    object-fit: cover !important;
+}
+
+.card-body {
+    padding: 0 !important;
+}
+
+.card-text p {
+    font-weight: 300;
+}
+
+.list-link {
+    text-decoration: none !important;
+    color: var(--neutral-700);
+}
+
+/* Button Styles */
+.add-btn {
+    background-color: var(--primary-500) !important;
+    border: none !important;
+    transition: all var(--transition-base);
+}
+
+.add-btn:hover {
+    background-color: var(--primary-600) !important;
+    transform: translateY(-2px);
+}
+
+.edit-btn {
+    background-color: var(--primary-500) !important;
+    border: none !important;
+    transition: all var(--transition-base);
+}
+
+.edit-btn:hover {
+    background-color: var(--primary-600) !important;
+    transform: translateY(-2px);
+}
+
+/* Show Page Styles */
+.show-img {
+    height: 30vh;
+    min-height: 250px;
+    object-fit: cover;
+    border-radius: var(--radius-lg);
+}
+
+.btns {
+    display: flex;
+    gap: var(--space-3);
+}
+
+/* Map Styles */
+#map {
+    height: 400px;
+    width: 100%;
+    max-width: 60vh;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+/* Bootstrap Overrides for Modern Look */
+.btn {
+    border-radius: var(--radius-lg);
+    font-weight: var(--font-semibold);
+    transition: all var(--transition-base);
+}
+
+.btn-dark {
+    background-color: var(--neutral-800);
+    border-color: var(--neutral-800);
+}
+
+.btn-dark:hover {
+    background-color: var(--neutral-900);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.card {
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--neutral-200);
+}
+
+.form-control {
+    border-radius: var(--radius-lg);
+    border: 2px solid var(--neutral-200);
+    transition: all var(--transition-base);
+}
+
+.form-control:focus {
+    border-color: var(--primary-500);
+    box-shadow: 0 0 0 4px rgba(255, 56, 92, 0.1);
+}

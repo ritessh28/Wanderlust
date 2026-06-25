@@ -1,0 +1,330 @@
+<% layout("/layouts/boilerplate") %>
+
+    <style>
+        .dashboard-container {
+            padding: 2rem 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--neutral-50);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid var(--neutral-200);
+            transition: all var(--transition-base);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-300);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--neutral-900);
+            font-family: var(--font-display);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--neutral-500);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .recent-bookings-container {
+            background: var(--neutral-50);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid var(--neutral-200);
+            margin-bottom: 2.5rem;
+        }
+
+        .booking-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--neutral-100);
+        }
+
+        .booking-item:last-child {
+            border-bottom: none;
+        }
+
+        .guest-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-right: 1rem;
+        }
+
+        .listing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .host-listing-card {
+            background: var(--neutral-50);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--neutral-200);
+            transition: all var(--transition-base);
+        }
+
+        .host-listing-card:hover {
+            border-color: var(--primary-500);
+        }
+
+        .listing-img-sm {
+            height: 160px;
+            width: 100%;
+            object-fit: cover;
+        }
+    </style>
+
+    <div class="dashboard-container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="font-extrabold" style="font-size: 2.25rem;">Host Dashboard</h1>
+                <p class="text-muted">Welcome back, <%= curruser.username %>! Here's how your properties are performing.
+                </p>
+            </div>
+            <a href="/listings/new" class="btn-modern btn-primary py-3">
+                <i class="fa-solid fa-plus me-2"></i> Add New Listing
+            </a>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="stats-grid">
+            <div class="stat-card reveal reveal-up">
+                <div class="stat-icon" style="background: rgba(255, 56, 92, 0.1); color: var(--primary-500);">
+                    <i class="fa-solid fa-indian-rupee-sign"></i>
+                </div>
+                <div class="stat-value">₹<%= stats.totalEarnings.toLocaleString("en-IN") %>
+                </div>
+                <div class="stat-label">Total Earnings</div>
+            </div>
+            <div class="stat-card reveal reveal-up" style="transition-delay: 0.1s;">
+                <div class="stat-icon" style="background: rgba(0, 166, 153, 0.1); color: #00A699;">
+                    <i class="fa-solid fa-house-chimney"></i>
+                </div>
+                <div class="stat-value">
+                    <%= stats.activeListings %>
+                </div>
+                <div class="stat-label">Active Listings</div>
+            </div>
+            <div class="stat-card reveal reveal-up" style="transition-delay: 0.2s;">
+                <div class="stat-icon" style="background: rgba(72, 72, 72, 0.1); color: #484848;">
+                    <i class="fa-solid fa-calendar-check"></i>
+                </div>
+                <div class="stat-value">
+                    <%= stats.totalBookings %>
+                </div>
+                <div class="stat-label">Total Bookings</div>
+            </div>
+            <div class="stat-card reveal reveal-up" style="transition-delay: 0.3s;">
+                <div class="stat-icon" style="background: rgba(255, 180, 0, 0.1); color: #FFB400;">
+                    <i class="fa-solid fa-star"></i>
+                </div>
+                <div class="stat-value">
+                    <%= stats.avgRating %>
+                </div>
+                <div class="stat-label">Avg Rating</div>
+            </div>
+        </div>
+
+        <style>
+            .activity-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 2rem;
+                margin-bottom: 2.5rem;
+            }
+
+            .review-item {
+                display: flex;
+                align-items: flex-start;
+                padding: 1rem 0;
+                border-bottom: 1px solid var(--neutral-100);
+            }
+
+            .review-item:last-child {
+                border-bottom: none;
+            }
+
+            .review-text {
+                font-size: 0.85rem;
+                color: var(--neutral-600);
+                display: -webkit-box;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+        </style>
+
+        <!-- Recent Activity -->
+        <div class="activity-grid">
+            <div class="recent-bookings-container reveal reveal-up mb-0">
+                <h4 class="font-bold mb-4">Recent Bookings</h4>
+                <% if (recentBookings.length> 0) { %>
+                    <% for (let booking of recentBookings) { %>
+                        <div class="booking-item">
+                            <div class="guest-avatar">
+                                <%= booking.user.username.charAt(0).toUpperCase() %>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="font-bold" style="font-size: 0.95rem;">@<%= booking.user.username %>
+                                </div>
+                                <div style="font-size: 0.8rem; color: #666;">
+                                    <%= booking.listing.title %>
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <div class="font-bold text-success">+₹<%= booking.totalPrice.toLocaleString("en-IN") %>
+                                </div>
+                                <div class="mb-1">
+                                    <% if (booking.paymentStatus === 'paid') { %>
+                                        <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: var(--success-500); font-size: 0.7rem;">Paid</span>
+                                    <% } else if (booking.paymentStatus === 'failed') { %>
+                                        <span class="badge" style="background: rgba(239, 68, 68, 0.1); color: var(--error-500); font-size: 0.7rem;">Failed</span>
+                                    <% } else { %>
+                                        <span class="badge" style="background: rgba(245, 158, 11, 0.1); color: var(--warning-500); font-size: 0.7rem;">Pending</span>
+                                    <% } %>
+                                </div>
+                                <div style="font-size: 0.75rem; color: var(--neutral-500);">
+                                    <%= new Date(booking.checkIn).toLocaleDateString() %>
+                                </div>
+                            </div>
+                        </div>
+                        <% } %>
+                            <% } else { %>
+                                <div class="text-center py-5">
+                                    <i class="fa-solid fa-calendar-xmark text-muted mb-3" style="font-size: 3rem;"></i>
+                                    <p class="text-muted">No bookings yet.</p>
+                                </div>
+                                <% } %>
+                                    <a href="/host/bookings" class="btn btn-link w-100 mt-3 text-primary font-bold"
+                                        style="text-decoration: none;">View All Bookings</a>
+            </div>
+
+            <div class="recent-bookings-container reveal reveal-up mb-0" style="transition-delay: 0.1s;">
+                <h4 class="font-bold mb-4">Recent Reviews</h4>
+                <% if (recentReviews && recentReviews.length> 0) { %>
+                    <% for (let r of recentReviews) { %>
+                        <div class="review-item px-3 hover-lift">
+                            <div class="guest-avatar shadow-sm" style="background: var(--gradient-secondary); width: 38px; height: 38px; font-size: 0.85rem;">
+                                <%= r.review.author ? r.review.author.username.charAt(0).toUpperCase() : "U" %>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <div class="font-bold text-neutral-800" style="font-size: 0.9rem;">@<%= r.review.author ?
+                                            r.review.author.username : "Unknown" %>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="text-warning text-sm font-bold">
+                                            <i class="fa-solid fa-star"></i>
+                                            <%= r.review.rating %>
+                                        </div>
+                                        <% if (r.review.sentiment) { %>
+                                            <% if (r.review.sentiment.trim().toLowerCase() === "positive") { %>
+                                                <span class="badge badge-success" style="font-size: 0.65rem;"><i class="fa-solid fa-face-smile"></i> Positive</span>
+                                            <% } else if (r.review.sentiment.trim().toLowerCase() === "negative") { %>
+                                                <span class="badge" style="background: var(--error-light); color: var(--error-500); font-size: 0.65rem;"><i class="fa-solid fa-face-frown"></i> Negative</span>
+                                            <% } else { %>
+                                                <span class="badge badge-primary" style="font-size: 0.65rem;"><i class="fa-solid fa-face-meh"></i> Neutral</span>
+                                            <% } %>
+                                        <% } %>
+                                    </div>
+                                </div>
+                                <div style="font-size: 0.75rem; color: var(--primary-500); font-weight: 600; margin-bottom: 4px;">
+                                    <i class="fa-solid fa-house-chimney me-1" style="font-size: 0.7rem;"></i> <%= r.listingTitle %>
+                                </div>
+                                <div class="review-text" style="font-style: italic; color: var(--neutral-600);">
+                                    "<%= r.review.comment %>"
+                                </div>
+                            </div>
+                        </div>
+                        <% } %>
+                            <% } else { %>
+                                <div class="text-center py-5">
+                                    <i class="fa-solid fa-star-half-stroke text-muted mb-3"
+                                        style="font-size: 3rem;"></i>
+                                    <p class="text-muted">No reviews yet.</p>
+                                </div>
+                                <% } %>
+            </div>
+        </div>
+
+        <!-- Listings Management -->
+        <h3 class="font-extrabold mb-4 mt-5">My Listings</h3>
+        <div class="listing-grid">
+            <% for (let list of listings) { %>
+                <div class="host-listing-card reveal reveal-up">
+                    <img src="<%= list.images[0].url %>" class="listing-img-sm" alt="<%= list.title %>">
+                    <div class="p-3">
+                        <h5 class="font-bold text-truncate mb-1">
+                            <%= list.title %>
+                        </h5>
+                        <p class="text-muted mb-2" style="font-size: 0.85rem;"><i
+                                class="fa-solid fa-location-dot me-1"></i>
+                            <%= list.location %>
+                        </p>
+                        
+                        <div class="mb-3">
+                            <span class="text-muted" style="font-size: 0.75rem;">Price:</span>
+                            <span class="font-bold">₹<%= list.price.toLocaleString("en-IN") %></span><span class="text-muted" style="font-size: 0.75rem;"> /night</span>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mb-3 p-2 bg-light rounded shadow-sm">
+                            <div class="text-center flex-grow-1 border-end">
+                                <span class="text-muted d-block" style="font-size: 0.65rem; text-transform: uppercase; font-weight: 700;">Earnings</span>
+                                <div class="font-bold text-success" style="font-size: 0.9rem;">₹<%= list.listingEarnings.toLocaleString("en-IN") %></div>
+                            </div>
+                            <div class="text-center flex-grow-1">
+                                <span class="text-muted d-block" style="font-size: 0.65rem; text-transform: uppercase; font-weight: 700;">Bookings</span>
+                                <div class="font-bold text-primary" style="font-size: 0.9rem;">
+                                    <%= list.bookings.length %>
+                                    <small class="text-muted" style="font-size: 0.6rem; font-weight: normal;">
+                                        (<%= list.confirmedBookings %> Paid)
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <a href="/listings/<%= list._id %>"
+                                class="btn btn-outline-dark btn-sm flex-grow-1 border-radius-lg font-semibold">View</a>
+                            <a href="/listings/<%= list._id %>/edit"
+                                class="btn btn-outline-primary btn-sm flex-grow-1 border-radius-lg font-semibold">Edit</a>
+                        </div>
+                    </div>
+                </div>
+                <% } %>
+        </div>
+    </div>

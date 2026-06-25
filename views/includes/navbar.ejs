@@ -1,0 +1,465 @@
+<style>
+  /* Modern Navbar Styling */
+  .navbar-modern {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: none;
+    border-bottom: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-sm);
+    padding: var(--space-4) 0;
+    position: sticky;
+    top: 0;
+    z-index: var(--z-sticky);
+    transition: all var(--transition-base);
+  }
+
+  .navbar-modern.scrolled {
+    background: var(--glass-bg);
+    box-shadow: var(--shadow-md);
+  }
+
+  .navbar-brand-modern {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    font-weight: var(--font-bold);
+    color: var(--primary-500);
+    text-decoration: none;
+    transition: transform var(--transition-base);
+  }
+
+  .navbar-brand-modern:hover {
+    transform: scale(1.05);
+    color: var(--primary-600);
+  }
+
+  .navbar-brand-modern i {
+    font-size: var(--text-2xl);
+  }
+
+  /* Modern Search Bar */
+  .navbar-search-modern {
+    position: relative;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+
+  .search-input-modern {
+    width: 100%;
+    padding: var(--space-3) 6rem var(--space-3) var(--space-12);
+    background: var(--neutral-100);
+    border: 2px solid var(--neutral-200);
+    border-radius: var(--radius-full);
+    font-size: var(--text-sm);
+    color: var(--neutral-800);
+    transition: all var(--transition-base);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .search-input-modern::placeholder {
+    color: var(--neutral-400);
+    opacity: 1;
+  }
+
+  .search-input-modern:focus {
+    outline: none;
+    border-color: var(--primary-500);
+    box-shadow: 0 0 0 4px rgba(255, 56, 92, 0.1), var(--shadow-md);
+  }
+
+  .search-icon {
+    position: absolute;
+    left: var(--space-4);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--neutral-400);
+    pointer-events: none;
+  }
+
+  .search-btn-modern {
+    position: absolute;
+    right: var(--space-1);
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--gradient-primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius-full);
+    padding: var(--space-2) var(--space-5);
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .search-btn-modern:hover {
+    transform: translateY(-50%) scale(1.05);
+    box-shadow: var(--shadow-md);
+  }
+
+  /* Nav Links */
+  .nav-link-modern {
+    color: var(--neutral-700);
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-lg);
+    transition: all var(--transition-base);
+    position: relative;
+    text-decoration: none;
+  }
+
+  .nav-link-modern:hover {
+    background: var(--neutral-100);
+    color: var(--neutral-900);
+  }
+
+  .nav-link-modern::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--gradient-primary);
+    transition: all var(--transition-base);
+    transform: translateX(-50%);
+  }
+
+  .nav-link-modern:hover::after {
+    width: 80%;
+  }
+
+  /* User Menu Button */
+  .user-menu-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-2) var(--space-3);
+    background: var(--neutral-50);
+    border: 1px solid var(--neutral-200);
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .user-menu-btn:hover {
+    box-shadow: var(--shadow-md);
+  }
+
+  .user-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--gradient-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: var(--font-semibold);
+    font-size: var(--text-sm);
+  }
+
+  /* Auth Buttons */
+  .auth-buttons {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .btn-login {
+    padding: var(--space-2) var(--space-4);
+    background: transparent;
+    color: var(--neutral-700);
+    border: none;
+    border-radius: var(--radius-lg);
+    font-weight: var(--font-semibold);
+    font-size: var(--text-sm);
+    cursor: pointer;
+    transition: all var(--transition-base);
+  }
+
+  .btn-login:hover {
+    background: var(--neutral-100);
+  }
+
+  .btn-signup {
+    padding: var(--space-2) var(--space-4);
+    background: var(--gradient-primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius-lg);
+    font-weight: var(--font-semibold);
+    font-size: var(--text-sm);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .btn-signup:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+
+  /* Mobile Menu */
+  .navbar-toggler-modern {
+    border: 1px solid var(--neutral-200);
+    border-radius: var(--radius-base);
+    padding: var(--space-2);
+    background: var(--neutral-50);
+    transition: all var(--transition-base);
+  }
+
+  .navbar-toggler-modern:hover {
+    background: var(--neutral-100);
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .navbar-search-modern {
+      max-width: 100%;
+      margin-top: var(--space-4);
+    }
+
+    .search-input-modern {
+      font-size: var(--text-sm);
+      padding: var(--space-2) var(--space-3) var(--space-2) var(--space-10);
+    }
+
+    .search-btn-modern {
+      padding: var(--space-1) var(--space-3);
+      font-size: var(--text-xs);
+    }
+
+    .navbar-collapse {
+      background: var(--neutral-50);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      margin-top: var(--space-4);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .nav-link-modern {
+      width: 100%;
+      margin: var(--space-1) 0;
+    }
+
+    .auth-buttons {
+      flex-direction: column;
+      width: 100%;
+      margin-top: var(--space-3);
+    }
+
+    .btn-login,
+    .btn-signup {
+      width: 100%;
+      text-align: center;
+    }
+
+    .border-bottom-dashed {
+      border-bottom: 1px dashed var(--neutral-200);
+    }
+  }
+</style>
+
+<nav class="navbar navbar-expand-md navbar-modern">
+  <div class="container-fluid">
+    <!-- Brand Logo -->
+    <a class="navbar-brand-modern" href="/listings">
+      <i class="fa-solid fa-compass"></i>
+      <span>Wanderlust</span>
+    </a>
+
+    <!-- Mobile Toggle Button -->
+    <button class="navbar-toggler navbar-toggler-modern" type="button" data-bs-toggle="collapse"
+      data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false"
+      aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <!-- Search Bar (Desktop - Center) -->
+      <div class="navbar-search-modern d-none d-md-block">
+        <form role="search" action="/listings/search" method="GET">
+          <i class="fa-solid fa-magnifying-glass search-icon"></i>
+          <input class="search-input-modern" type="search" name="q" placeholder="Search..."
+            aria-label="Search">
+          <button class="search-btn-modern" type="submit">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <span>Search</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Right Side Navigation -->
+      <div class="ms-auto d-flex align-items-center gap-3">
+        <!-- About Us Link -->
+        <a class="nav-link-modern d-none d-md-block" href="/about">
+          <i class="fa-solid fa-circle-info me-1"></i>
+          About Us
+        </a>
+
+        <!-- Wanderlust Your Home Link -->
+        <a class="nav-link-modern d-none d-md-block" href="/listings/new">
+          <i class="fa-solid fa-house-circle-check me-1"></i>
+          Wanderlust your home
+        </a>
+
+       <% if (typeof curruser !== 'undefined' && curruser && curruser.role === 'admin') { %>
+          <a class="nav-link-modern d-none d-md-block text-primary fw-bold" href="/admin/monitor">
+            <i class="fa-solid fa-gauge-high me-1"></i>
+            Monitor
+          </a>
+        <% } %>
+
+        <!-- Dark Mode Toggle (Always Visible) -->
+        <button id="themeToggle" class="btn-modern btn-ghost p-2" style="border-radius: 50%; width: 40px; height: 40px;">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+
+        <% if (!curruser) { %>
+          <div class="auth-buttons">
+            <a href="/login" class="btn-login">Log in</a>
+            <a href="/signup" class="btn-signup">Sign up</a>
+          </div>
+          <% } else { %>
+            <div class="d-flex align-items-center gap-3">
+              <!-- Wishlist Link -->
+              <a href="/wishlist" class="nav-link-modern">
+                <i class="fa-solid fa-heart me-1"></i>
+                Wishlist
+              </a>
+
+              <!-- User Menu Dropdown -->
+              <div class="dropdown">
+                <button class="user-menu-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fa-solid fa-bars"></i>
+                  <div class="user-avatar text-white">
+                    <%= curruser.username.charAt(0).toUpperCase() %>
+                  </div>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2" style="min-width: 250px;">
+                  <li class="px-3 py-2 border-bottom">
+                    <div class="fw-bold text-primary">
+                      <%= curruser.username %>
+                    </div>
+                    <small class="text-muted">
+                      <%= curruser.email %>
+                    </small>
+                  </li>
+                  <li><a class="dropdown-item py-2" href="/profile"><i class="fa-solid fa-user me-2"></i>Profile</a>
+                  </li>
+                  <li><a class="dropdown-item py-2" href="/wishlist"><i class="fa-solid fa-heart me-2"></i>Wishlist</a>
+                  </li>
+                  <li><a class="dropdown-item py-2" href="/bookings"><i
+                        class="fa-solid fa-suitcase me-2"></i>My Trips</a></li>
+                  <li><a class="dropdown-item py-2" href="/host/bookings"><i
+                        class="fa-solid fa-calendar-check me-2"></i>Bookings</a></li>
+                  <li><a class="dropdown-item py-2 fw-semibold" href="/host/dashboard"><i
+                        class="fa-solid fa-house-user me-2 text-primary"></i>Host Dashboard</a></li>
+                  <% if (curruser.role && curruser.role.toString().toLowerCase() === 'admin') { %>
+                  <li>
+                    <hr class="dropdown-divider">
+                  </li>
+                  <li class="px-3 py-1"><span class="badge bg-primary-subtle text-primary border border-primary-subtle">Admin Access Active</span></li>
+                  <li><a class="dropdown-item py-2 text-primary fw-bold" href="/admin/monitor"><i class="fa-solid fa-gauge-high me-2"></i>Monitor Platform</a></li>
+                  <li><a class="dropdown-item py-2 text-primary fw-bold" href="/admin"><i class="fa-solid fa-shield-halved me-2"></i>Admin Dashboard</a></li>
+                  <% } %>
+                  <li>
+                    <hr class="dropdown-divider">
+                  </li>
+                  <li><a class="dropdown-item py-2 text-danger fw-semibold" href="/logout"><i
+                        class="fa-solid fa-right-from-bracket me-2"></i>Logout</a></li>
+                </ul>
+              </div>
+            </div>
+            <% } %>
+      </div>
+
+      <!-- Mobile Menu Items -->
+      <div class="d-md-none mt-3">
+        <!-- Search Bar (Mobile) -->
+        <div class="navbar-search-modern">
+          <form role="search" action="/listings/search" method="GET">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input class="search-input-modern" type="search" name="q" placeholder="Search destinations..."
+              aria-label="Search destinations">
+            <button class="search-btn-modern" type="submit">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+          </form>
+        </div>
+
+        <!-- Mobile Navigation Links -->
+        <a class="nav-link-modern d-block mt-2" href="/listings">
+          <i class="fa-solid fa-compass me-2"></i>
+          Explore
+        </a>
+        <a class="nav-link-modern d-block" href="/listings/new">
+          <i class="fa-solid fa-house-circle-check me-2"></i>
+          Wanderlust your home
+        </a>
+        <% if (curruser) { %>
+          <a class="nav-link-modern d-block" href="/wishlist">
+            <i class="fa-solid fa-heart me-2"></i>
+            Wishlist
+          </a>
+          <a class="nav-link-modern d-block" href="/bookings">
+            <i class="fa-solid fa-suitcase me-2"></i>
+            My Trips
+          </a>
+          <a class="nav-link-modern d-block" href="/host/bookings">
+            <i class="fa-solid fa-calendar-check me-2"></i>
+            Host Bookings
+          </a>
+          <a class="nav-link-modern d-block fw-semibold" href="/host/dashboard">
+            <i class="fa-solid fa-house-user me-2 text-primary"></i>
+            Host Dashboard
+          </a>
+          <a class="nav-link-modern d-block" href="/profile">
+            <i class="fa-solid fa-user me-2"></i>
+            Profile
+          </a>
+          <% if (curruser.role === 'admin') { %>
+          <a class="nav-link-modern d-block text-primary fw-bold" href="/admin/monitor">
+            <i class="fa-solid fa-gauge-high me-2"></i>
+            Monitor Platform
+          </a>
+          <a class="nav-link-modern d-block text-primary" href="/admin">
+            <i class="fa-solid fa-shield-halved me-2"></i>
+            Admin Dashboard
+          </a>
+          <% } %>
+          <a class="nav-link-modern d-block text-danger" href="/logout">
+            <i class="fa-solid fa-right-from-bracket me-2"></i>
+            Logout
+          </a>
+          <% } else { %>
+            <div class="mt-3 d-flex flex-column gap-2">
+              <a href="/login" class="btn-login text-center border">Log in</a>
+              <a href="/signup" class="btn-signup text-center">Sign up</a>
+            </div>
+            <% } %>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  // Add scroll effect to navbar
+  window.addEventListener('scroll', function () {
+    const navbar = document.querySelector('.navbar-modern');
+    if (window.scrollY > 50) {
+      navbar.classList.add('scrolled');
+    } else {
+      navbar.classList.remove('scrolled');
+    }
+  });
+</script>

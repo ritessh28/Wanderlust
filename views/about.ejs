@@ -1,0 +1,452 @@
+<%layout("/layouts/boilerplate") %>
+
+<style>
+  /* ============================================================
+     ABOUT US PAGE - Premium Design
+     ============================================================ */
+
+  .about-hero {
+    position: relative;
+    background: var(--gradient-primary);
+    padding: var(--space-20) var(--space-6);
+    text-align: center;
+    overflow: hidden;
+    margin: calc(var(--space-6) * -1) calc(var(--space-6) * -1) var(--space-16);
+  }
+
+  .about-hero::before {
+    content: '';
+    position: absolute;
+    width: 500px; height: 500px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 50%;
+    top: -200px; right: -150px;
+  }
+
+  .about-hero::after {
+    content: '';
+    position: absolute;
+    width: 350px; height: 350px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 50%;
+    bottom: -150px; left: -100px;
+  }
+
+  .about-hero-content {
+    position: relative;
+    z-index: 2;
+    color: white;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .about-hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: var(--radius-full);
+    padding: var(--space-2) var(--space-4);
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    color: white;
+    margin-bottom: var(--space-6);
+  }
+
+  .about-hero h1 {
+    font-size: var(--text-6xl);
+    font-weight: var(--font-extrabold);
+    color: white;
+    margin-bottom: var(--space-4);
+    text-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  }
+
+  .about-hero p {
+    font-size: var(--text-xl);
+    color: rgba(255,255,255,0.9);
+    line-height: 1.7;
+    margin-bottom: 0;
+  }
+
+  /* Stats Row */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-6);
+    margin-bottom: var(--space-16);
+  }
+
+  .stat-card {
+    background: var(--neutral-50);
+    border: 1px solid var(--neutral-200);
+    border-radius: var(--radius-xl);
+    padding: var(--space-8) var(--space-6);
+    text-align: center;
+    transition: all var(--transition-base);
+  }
+
+  .stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary-300);
+  }
+
+  .stat-number {
+    font-family: var(--font-display);
+    font-size: var(--text-5xl);
+    font-weight: var(--font-extrabold);
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: block;
+    margin-bottom: var(--space-2);
+  }
+
+  .stat-label {
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    color: var(--neutral-500);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* Mission Section */
+  .mission-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-16);
+    align-items: center;
+    margin-bottom: var(--space-20);
+  }
+
+  .mission-text h2 {
+    font-size: var(--text-4xl);
+    font-weight: var(--font-extrabold);
+    color: var(--neutral-800);
+    margin-bottom: var(--space-6);
+    line-height: 1.15;
+  }
+
+  .mission-text h2 span {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .mission-text p {
+    font-size: var(--text-lg);
+    color: var(--neutral-600);
+    line-height: 1.8;
+    margin-bottom: var(--space-6);
+  }
+
+  .mission-visual {
+    position: relative;
+    border-radius: var(--radius-2xl);
+    overflow: hidden;
+    height: 420px;
+    background: var(--gradient-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mission-visual-inner {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    color: white;
+  }
+
+  .mission-visual::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(102,126,234,0.9) 0%, rgba(118,75,162,0.9) 100%);
+  }
+
+  .mission-icon-large {
+    font-size: 6rem;
+    display: block;
+    margin-bottom: var(--space-6);
+    animation: float 4s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-16px); }
+  }
+
+  /* Values Section */
+  .values-section {
+    background: var(--neutral-100);
+    border-radius: var(--radius-2xl);
+    padding: var(--space-16);
+    margin-bottom: var(--space-20);
+  }
+
+  .values-section h2 {
+    text-align: center;
+    font-size: var(--text-4xl);
+    font-weight: var(--font-extrabold);
+    margin-bottom: var(--space-12);
+  }
+
+  .values-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-6);
+  }
+
+  .value-card {
+    background: var(--neutral-50);
+    border-radius: var(--radius-xl);
+    padding: var(--space-8);
+    border: 1px solid var(--neutral-200);
+    transition: all var(--transition-base);
+  }
+
+  .value-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .value-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--text-2xl);
+    margin-bottom: var(--space-4);
+  }
+
+  .value-card h5 {
+    font-size: var(--text-xl);
+    font-weight: var(--font-bold);
+    color: var(--neutral-800);
+    margin-bottom: var(--space-3);
+  }
+
+  .value-card p {
+    font-size: var(--text-sm);
+    color: var(--neutral-600);
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  /* Team / CTA Section */
+  .cta-section {
+    background: var(--gradient-primary);
+    border-radius: var(--radius-2xl);
+    padding: var(--space-16);
+    text-align: center;
+    margin-bottom: var(--space-16);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-section::before {
+    content: '';
+    position: absolute;
+    width: 400px; height: 400px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 50%;
+    top: -200px; right: -100px;
+  }
+
+  .cta-section h2 {
+    color: white;
+    font-size: var(--text-4xl);
+    font-weight: var(--font-extrabold);
+    margin-bottom: var(--space-4);
+  }
+
+  .cta-section p {
+    color: rgba(255,255,255,0.88);
+    font-size: var(--text-lg);
+    margin-bottom: var(--space-8);
+  }
+
+  .cta-buttons {
+    display: flex;
+    gap: var(--space-4);
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-cta-white {
+    background: white;
+    color: var(--primary-500);
+    border: none;
+    border-radius: var(--radius-lg);
+    padding: var(--space-4) var(--space-8);
+    font-weight: var(--font-bold);
+    font-size: var(--text-base);
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    transition: all var(--transition-base);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .btn-cta-white:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-xl);
+    color: var(--primary-600);
+  }
+
+  .btn-cta-outline {
+    background: transparent;
+    color: white;
+    border: 2px solid rgba(255,255,255,0.6);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4) var(--space-8);
+    font-weight: var(--font-bold);
+    font-size: var(--text-base);
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    transition: all var(--transition-base);
+  }
+
+  .btn-cta-outline:hover {
+    background: rgba(255,255,255,0.15);
+    border-color: white;
+    color: white;
+    transform: translateY(-2px);
+  }
+
+  @media (max-width: 768px) {
+    .about-hero h1 { font-size: var(--text-4xl); }
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .mission-grid { grid-template-columns: 1fr; }
+    .mission-visual { height: 280px; }
+    .values-grid { grid-template-columns: 1fr; }
+    .values-section { padding: var(--space-8); }
+    .cta-section { padding: var(--space-8); }
+  }
+</style>
+
+<!-- Hero -->
+<div class="about-hero reveal reveal-down">
+  <div class="about-hero-content">
+    <div class="about-hero-badge">
+      <i class="fa-solid fa-compass"></i>
+      Our Story
+    </div>
+    <h1>Travel is a <br>Human Right</h1>
+    <p>Wanderlust was founded with a simple belief — everyone deserves to experience the world. We connect curious travelers with unique homes, hidden gems, and extraordinary hosts around the globe.</p>
+  </div>
+</div>
+
+<!-- Stats -->
+<div class="stats-row">
+  <div class="stat-card reveal reveal-up">
+    <span class="stat-number">10K+</span>
+    <span class="stat-label">Properties Listed</span>
+  </div>
+  <div class="stat-card reveal reveal-up" style="transition-delay: 0.1s;">
+    <span class="stat-number">50K+</span>
+    <span class="stat-label">Happy Travelers</span>
+  </div>
+  <div class="stat-card reveal reveal-up" style="transition-delay: 0.2s;">
+    <span class="stat-number">120+</span>
+    <span class="stat-label">Countries</span>
+  </div>
+  <div class="stat-card reveal reveal-up" style="transition-delay: 0.3s;">
+    <span class="stat-number">4.9★</span>
+    <span class="stat-label">Average Rating</span>
+  </div>
+</div>
+
+<!-- Mission -->
+<div class="mission-grid reveal reveal-up">
+  <div class="mission-text">
+    <h2>We're on a mission to make <span>travel feel like home</span></h2>
+    <p>Founded in 2024 by a team of passionate travelers and technologists, Wanderlust started as a simple idea: what if finding the perfect place to stay was as easy as calling a friend?</p>
+    <p>Today, we're a platform trusted by thousands of hosts and travelers — but our heart hasn't changed. Every listing, every booking, every review is powered by real human connection.</p>
+    <a href="/listings" class="btn-modern btn-primary" style="text-decoration: none;">
+      <i class="fa-solid fa-compass me-2"></i> Explore Listings
+    </a>
+  </div>
+  <div class="mission-visual">
+    <div class="mission-visual-inner">
+      <span class="mission-icon-large">🌍</span>
+      <h3 style="color: white; font-size: var(--text-2xl);">Built for Explorers</h3>
+      <p style="color: rgba(255,255,255,0.85); font-size: var(--text-base); margin: 0;">Every journey starts with a place to belong.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Values -->
+<div class="values-section reveal reveal-up">
+  <h2>What We Stand For</h2>
+  <div class="values-grid">
+    <div class="value-card">
+      <div class="value-icon" style="background: rgba(255,56,92,0.1);">
+        <i class="fa-solid fa-heart" style="color: var(--primary-500);"></i>
+      </div>
+      <h5>Genuine Hospitality</h5>
+      <p>Every host on our platform is vetted and verified. We believe great travel is built on trust and genuine warmth — not transactions.</p>
+    </div>
+    <div class="value-card">
+      <div class="value-icon" style="background: rgba(0,166,153,0.1);">
+        <i class="fa-solid fa-leaf" style="color: var(--success-500);"></i>
+      </div>
+      <h5>Sustainable Travel</h5>
+      <p>We're committed to responsible tourism. Our platform actively promotes eco-friendly stays and encourages travelers to respect local communities.</p>
+    </div>
+    <div class="value-card">
+      <div class="value-icon" style="background: rgba(0,102,255,0.1);">
+        <i class="fa-solid fa-shield-halved" style="color: var(--info-500);"></i>
+      </div>
+      <h5>Safety First</h5>
+      <p>From identity verification to 24/7 support, robust safety systems protect both hosts and guests at every step of their journey.</p>
+    </div>
+    <div class="value-card">
+      <div class="value-icon" style="background: rgba(255,180,0,0.1);">
+        <i class="fa-solid fa-star" style="color: var(--warning-500);"></i>
+      </div>
+      <h5>Quality Experiences</h5>
+      <p>We curate listings with high standards. Every property is reviewed by real guests, ensuring you always know what you're getting.</p>
+    </div>
+    <div class="value-card">
+      <div class="value-icon" style="background: rgba(255,56,92,0.1);">
+        <i class="fa-solid fa-globe" style="color: var(--primary-500);"></i>
+      </div>
+      <h5>Global Community</h5>
+      <p>Wanderlust is more than a platform — it's a community of over 50,000 travelers and hosts who believe the world is better when shared.</p>
+    </div>
+    <div class="value-card">
+      <div class="value-icon" style="background: rgba(118,75,162,0.1);">
+        <i class="fa-solid fa-lightbulb" style="color: #764BA2;"></i>
+      </div>
+      <h5>Constant Innovation</h5>
+      <p>We keep travel ahead of the curve with AI-powered recommendations, smart booking tools, and real-time platform monitoring.</p>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta-section reveal reveal-scale">
+  <h2>Ready to Start Your Adventure?</h2>
+  <p>Join thousands of travelers discovering unique places and unforgettable experiences every day.</p>
+  <div class="cta-buttons">
+    <a href="/listings" class="btn-cta-white">
+      <i class="fa-solid fa-magnifying-glass"></i> Browse Listings
+    </a>
+    <a href="/signup" class="btn-cta-outline">
+      <i class="fa-solid fa-user-plus"></i> Join Wanderlust
+    </a>
+  </div>
+</div>

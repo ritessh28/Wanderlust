@@ -1,0 +1,102 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-0 shadow-lg" style="border-radius: 20px; overflow: hidden;">
+                <div class="row g-0">
+                    <div class="col-md-5 bg-primary d-flex align-items: center justify-content-center p-4 text-white">
+                        <div class="text-center">
+                            <i class="fa-solid fa-credit-card fa-4x mb-3"></i>
+                            <h3>Secure Checkout</h3>
+                            <p class="opacity-75">Your payment is encrypted and handled securely by Razorpay.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-7 p-4 p-md-5">
+                        <h2 class="mb-4">Order Summary</h2>
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Listing</span>
+                                <span class="fw-bold"><%= listing.title %></span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Check-in</span>
+                                <span class="fw-bold"><%= new Date(booking.checkIn).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) %></span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Check-out</span>
+                                <span class="fw-bold"><%= new Date(booking.checkOut).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) %></span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Total Duration</span>
+                                <span class="fw-bold"><%= booking.nights %> <%= booking.nights === 1 ? 'night' : 'nights' %></span>
+                            </div>
+                            <div class="d-flex justify-content-between mt-3 pt-3 border-top">
+                                <span class="text-muted fw-bold">Total Amount</span>
+                                <span class="fw-bold text-primary" style="font-size: 1.5rem;">₹<%= booking.totalPrice.toLocaleString('en-IN') %></span>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info border-0" style="border-radius: 12px;">
+                            <i class="fa-solid fa-circle-info me-2"></i>
+                            Click the button below to complete your payment and confirm your booking.
+                        </div>
+
+                        <button id="rzp-button1" class="btn btn-primary btn-lg w-100 py-3 shadow-sm" style="border-radius: 12px; font-weight: 600;">
+                            <i class="fa-solid fa-bolt me-2"></i> Pay Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form action="/payment/verify" method="POST" id="payment-verification-form" style="display: none;">
+    <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">
+    <input type="hidden" name="razorpay_order_id" id="razorpay_order_id">
+    <input type="hidden" name="razorpay_signature" id="razorpay_signature">
+    <input type="hidden" name="booking_id" value="<%= booking._id %>">
+</form>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    var options = {
+        "key": "<%= key_id %>", 
+        "amount": "<%= order.amount %>",
+        "currency": "<%= order.currency %>",
+        "name": "Wanderlust",
+        "description": "Booking for <%= listing.title %>",
+        "image": "/images/logo.png",
+        "order_id": "<%= order.id %>",
+        "handler": function (response){
+            // Success handler
+            document.getElementById('razorpay_payment_id').value = response.razorpay_payment_id;
+            document.getElementById('razorpay_order_id').value = response.razorpay_order_id;
+            document.getElementById('razorpay_signature').value = response.razorpay_signature;
+            document.getElementById('payment-verification-form').submit();
+        },
+        "prefill": {
+            "name": "<%= curruser.username %>",
+            "email": "<%= curruser.email || 'user@example.com' %>"
+        },
+        "theme": {
+            "color": "#FF385C"
+        }
+    };
+    var rzp1 = new Razorpay(options);
+    
+    rzp1.on('payment.failed', function (response){
+        alert("Payment failed: " + response.error.description);
+    });
+
+    document.getElementById('rzp-button1').onclick = function(e){
+        rzp1.open();
+        e.preventDefault();
+    }
+
+    // Auto-open on load
+    window.onload = function() {
+        rzp1.open();
+    };
+</script>

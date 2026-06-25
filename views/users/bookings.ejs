@@ -1,0 +1,287 @@
+<% layout("/layouts/boilerplate") %>
+
+<style>
+  .booking-card {
+    border-radius: 16px;
+    border: 1px solid var(--neutral-200, #e5e7eb);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    transition: box-shadow 0.2s;
+    overflow: hidden;
+  }
+  .booking-card:hover {
+    box-shadow: 0 6px 24px rgba(0,0,0,0.13);
+  }
+  .booking-card .card-header-accent {
+    background: linear-gradient(135deg, #FF385C 0%, #FF6B8A 100%);
+    height: 5px;
+  }
+  .badge-status {
+    font-size: 0.78rem;
+    padding: 5px 12px;
+    border-radius: 30px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  .badge-pending-host   { background: rgba(245,158,11,0.12); color: #B45309; border: 1px solid rgba(245,158,11,0.3); }
+  .badge-accepted       { background: rgba(16,185,129,0.12); color: #047857; border: 1px solid rgba(16,185,129,0.3); }
+  .badge-rejected       { background: rgba(239,68,68,0.12);  color: #B91C1C; border: 1px solid rgba(239,68,68,0.3); }
+  .badge-paid           { background: rgba(59,130,246,0.12); color: #1D4ED8; border: 1px solid rgba(59,130,246,0.3); }
+  .badge-payment-pending{ background: rgba(245,158,11,0.12); color: #B45309; border: 1px solid rgba(245,158,11,0.3); }
+
+  .btn-accept {
+    background: linear-gradient(135deg, #10B981, #059669);
+    border: none;
+    color: #fff;
+    border-radius: 10px;
+    font-weight: 600;
+    padding: 7px 18px;
+    font-size: 0.87rem;
+    transition: opacity 0.15s, transform 0.15s;
+  }
+  .btn-accept:hover { opacity: 0.88; transform: translateY(-1px); color: #fff; }
+
+  .btn-reject {
+    background: linear-gradient(135deg, #EF4444, #DC2626);
+    border: none;
+    color: #fff;
+    border-radius: 10px;
+    font-weight: 600;
+    padding: 7px 18px;
+    font-size: 0.87rem;
+    transition: opacity 0.15s, transform 0.15s;
+  }
+  .btn-reject:hover { opacity: 0.88; transform: translateY(-1px); color: #fff; }
+
+  .btn-paynow {
+    background: linear-gradient(135deg, #FF385C, #E11D48);
+    border: none;
+    color: #fff;
+    border-radius: 10px;
+    font-weight: 700;
+    padding: 9px 22px;
+    font-size: 0.92rem;
+    letter-spacing: 0.01em;
+    transition: opacity 0.15s, transform 0.15s;
+  }
+  .btn-paynow:hover { opacity: 0.88; transform: translateY(-1px); color: #fff; }
+
+  .page-header {
+    border-bottom: 2px solid var(--neutral-200, #e5e7eb);
+    padding-bottom: 12px;
+    margin-bottom: 28px;
+  }
+  .empty-state {
+    background: var(--neutral-100, #f9fafb);
+    border-radius: 20px;
+    border: 2px dashed var(--neutral-300, #d1d5db);
+    padding: 60px 20px;
+    text-align: center;
+  }
+  .listing-title-link {
+    color: inherit;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.08rem;
+  }
+  .listing-title-link:hover { color: #FF385C; text-decoration: underline; }
+
+  .host-notice {
+    background: rgba(59,130,246,0.07);
+    border-left: 4px solid #3B82F6;
+    border-radius: 0 10px 10px 0;
+    padding: 8px 14px;
+    font-size: 0.83rem;
+    color: #1e40af;
+    margin-top: 8px;
+  }
+  .guest-notice {
+    background: rgba(245,158,11,0.08);
+    border-left: 4px solid #F59E0B;
+    border-radius: 0 10px 10px 0;
+    padding: 8px 14px;
+    font-size: 0.83rem;
+    color: #92400e;
+    margin-top: 8px;
+  }
+  .rejected-notice {
+    background: rgba(239,68,68,0.07);
+    border-left: 4px solid #EF4444;
+    border-radius: 0 10px 10px 0;
+    padding: 8px 14px;
+    font-size: 0.83rem;
+    color: #991b1b;
+    margin-top: 8px;
+  }
+</style>
+
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-9">
+
+      <%# Page Header %>
+      <div class="page-header d-flex align-items-center gap-3">
+        <% if (typeof viewType !== 'undefined' && viewType === 'host') { %>
+          <i class="fa-solid fa-calendar-check fa-2x" style="color:#FF385C;"></i>
+          <div>
+            <h2 class="mb-0 fw-bold">Booking Requests</h2>
+            <p class="text-muted mb-0" style="font-size:0.9rem;">Manage booking requests from guests on your listings.</p>
+          </div>
+        <% } else { %>
+          <i class="fa-solid fa-plane fa-2x" style="color:#FF385C;"></i>
+          <div>
+            <h2 class="mb-0 fw-bold">Your Trips</h2>
+            <p class="text-muted mb-0" style="font-size:0.9rem;">Track all your travel bookings and payment status.</p>
+          </div>
+        <% } %>
+      </div>
+
+      <% if (bookings && bookings.length > 0) { %>
+        <div class="d-flex flex-column gap-3">
+          <% for (let booking of bookings) { %>
+            <div class="booking-card bg-white">
+              <div class="card-header-accent"></div>
+              <div class="p-4">
+                <div class="row g-3 align-items-start">
+
+                  <%# Left: Booking Info %>
+                  <div class="col-md-8">
+                    <%# Title %>
+                    <% if (booking.listing && booking.listing._id) { %>
+                      <a href="/listings/<%= booking.listing._id %>" class="listing-title-link">
+                        <i class="fa-solid fa-home me-1" style="color:#FF385C;"></i>
+                        <%= (booking.listing && booking.listing.title) ? booking.listing.title : 'Property Unavailable' %>
+                      </a>
+                    <% } else { %>
+                      <span class="fw-bold">Property Unavailable</span>
+                    <% } %>
+
+                    <div class="mt-2 text-muted" style="font-size:0.88rem;">
+                      <% if (typeof viewType !== 'undefined' && viewType === 'host') { %>
+                        <span><i class="fa-solid fa-user me-1"></i><strong>Guest:</strong>
+                          <%= (booking.user && booking.user.username) ? booking.user.username : 'Deleted User' %>
+                        </span><br>
+                      <% } else { %>
+                        <span><i class="fa-solid fa-location-dot me-1"></i>
+                          <%= (booking.listing && booking.listing.location) ? booking.listing.location : 'N/A' %>,
+                          <%= (booking.listing && booking.listing.country) ? booking.listing.country : 'N/A' %>
+                        </span><br>
+                      <% } %>
+
+                      <span class="me-3">
+                        <i class="fa-regular fa-calendar me-1"></i>
+                        <strong>Check-in:</strong>
+                        <%= booking.checkIn ? new Date(booking.checkIn).toLocaleDateString('en-IN', {day:'numeric',month:'short',year:'numeric'}) : 'N/A' %>
+                      </span>
+                      <span>
+                        <i class="fa-regular fa-calendar-check me-1"></i>
+                        <strong>Check-out:</strong>
+                        <%= booking.checkOut ? new Date(booking.checkOut).toLocaleDateString('en-IN', {day:'numeric',month:'short',year:'numeric'}) : 'N/A' %>
+                      </span>
+
+                      <% let nights = booking.nights || (booking.checkIn && booking.checkOut ? Math.ceil((new Date(booking.checkOut) - new Date(booking.checkIn)) / (1000*60*60*24)) : null); %>
+                      <% if (nights) { %> &bull; <strong><%= nights %></strong> <%= nights === 1 ? 'night' : 'nights' %><% } %><br>
+
+                      <span>
+                        <i class="fa-solid fa-indian-rupee-sign me-1"></i>
+                        <strong>Total:</strong> &#8377; <%= (booking.totalPrice || 0).toLocaleString('en-IN') %>
+                      </span>
+                    </div>
+
+                    <%# Status Badges %>
+                    <div class="mt-3 d-flex flex-wrap gap-2 align-items-center">
+                      <%# Booking verification status %>
+                      <% if (!booking.status || booking.status === 'pending') { %>
+                        <span class="badge-status badge-pending-host"><i class="fa-solid fa-hourglass-half me-1"></i>Awaiting Host Approval</span>
+                      <% } else if (booking.status === 'accepted') { %>
+                        <span class="badge-status badge-accepted"><i class="fa-solid fa-circle-check me-1"></i>Approved by Host</span>
+                      <% } else if (booking.status === 'rejected') { %>
+                        <span class="badge-status badge-rejected"><i class="fa-solid fa-circle-xmark me-1"></i>Rejected by Host</span>
+                      <% } %>
+
+                      <%# Payment status %>
+                      <% if (booking.paymentStatus === 'paid') { %>
+                        <span class="badge-status badge-paid"><i class="fa-solid fa-check-double me-1"></i>Payment Confirmed</span>
+                      <% } else if (booking.paymentStatus === 'failed') { %>
+                        <span class="badge-status badge-rejected"><i class="fa-solid fa-xmark me-1"></i>Payment Failed</span>
+                      <% } else if (booking.status === 'accepted') { %>
+                        <span class="badge-status badge-payment-pending"><i class="fa-solid fa-clock me-1"></i>Payment Pending</span>
+                      <% } %>
+                    </div>
+
+                    <%# Guest notices %>
+                    <% if (typeof viewType !== 'undefined' && viewType !== 'host') { %>
+                      <% if (!booking.status || booking.status === 'pending') { %>
+                        <div class="guest-notice"><i class="fa-solid fa-clock me-1"></i>Your booking request is pending. The host will review it shortly.</div>
+                      <% } else if (booking.status === 'accepted' && booking.paymentStatus !== 'paid') { %>
+                        <div class="host-notice"><i class="fa-solid fa-circle-info me-1"></i>Your booking is approved! Please complete the payment to confirm your stay.</div>
+                      <% } else if (booking.status === 'rejected') { %>
+                        <div class="rejected-notice"><i class="fa-solid fa-circle-xmark me-1"></i>The host has declined this booking request.</div>
+                      <% } %>
+                    <% } %>
+
+                    <p class="text-muted mt-2 mb-0" style="font-size:0.78rem;">
+                      <i class="fa-regular fa-clock me-1"></i>Requested on
+                      <%= new Date(booking.createdAt || (booking._id ? booking._id.getTimestamp() : Date.now())).toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'}) %>
+                    </p>
+                  </div>
+
+                  <%# Right: Action Buttons %>
+                  <div class="col-md-4 d-flex flex-column align-items-end gap-2 pt-1">
+                    <% if (booking.listing && booking.listing._id) { %>
+                      <a href="/listings/<%= booking.listing._id %>" class="btn btn-sm btn-outline-secondary" style="border-radius:10px; font-size:0.83rem;">
+                        <i class="fa-solid fa-arrow-up-right-from-square me-1"></i>View Listing
+                      </a>
+                    <% } %>
+
+                    <%# HOST: Accept / Reject buttons for pending bookings %>
+                    <% if (typeof viewType !== 'undefined' && viewType === 'host') { %>
+                      <% if (!booking.status || booking.status === 'pending') { %>
+                        <form action="/bookings/<%= booking._id %>/accept" method="POST" class="m-0">
+                          <button type="submit" class="btn-accept w-100">
+                            <i class="fa-solid fa-check me-1"></i>Accept
+                          </button>
+                        </form>
+                        <form action="/bookings/<%= booking._id %>/reject" method="POST" class="m-0">
+                          <button type="submit" class="btn-reject w-100">
+                            <i class="fa-solid fa-xmark me-1"></i>Reject
+                          </button>
+                        </form>
+                      <% } %>
+                    <% } %>
+
+                    <%# GUEST: Pay Now button for accepted, unpaid bookings %>
+                    <% if (typeof viewType === 'undefined' || viewType !== 'host') { %>
+                      <% if (booking.status === 'accepted' && booking.paymentStatus !== 'paid') { %>
+                        <a href="/bookings/<%= booking._id %>/checkout" class="btn-paynow text-decoration-none">
+                          <i class="fa-solid fa-bolt me-1"></i>Pay Now
+                        </a>
+                      <% } %>
+                    <% } %>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          <% } %>
+        </div>
+
+      <% } else { %>
+        <div class="empty-state">
+          <i class="fa-solid <%= typeof viewType !== 'undefined' && viewType === 'host' ? 'fa-calendar-xmark' : 'fa-plane-slash' %> fa-4x mb-3 text-muted"></i>
+          <h4 class="fw-bold">No <%= typeof viewType !== 'undefined' && viewType === 'host' ? 'booking requests' : 'trips' %> yet!</h4>
+          <p class="text-muted">
+            <%= typeof viewType !== 'undefined' && viewType === 'host'
+                ? "You haven't received any booking requests for your listings yet."
+                : "You haven't booked any trips yet. Start exploring!" %>
+          </p>
+          <% if (typeof viewType === 'undefined' || viewType !== 'host') { %>
+            <a href="/listings" class="btn btn-primary mt-2" style="border-radius:10px;">
+              <i class="fa-solid fa-magnifying-glass me-1"></i>Explore Listings
+            </a>
+          <% } %>
+        </div>
+      <% } %>
+
+    </div>
+  </div>
+</div>

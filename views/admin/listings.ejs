@@ -1,0 +1,84 @@
+<% layout("/layouts/boilerplate") %>
+
+    <div class="container py-4 reveal reveal-up">
+        <div class="flex-between mb-6">
+            <div>
+                <h2 class="mb-2">Manage Listings</h2>
+                <p class="text-muted">Oversee all property listings</p>
+            </div>
+            <a href="/admin" class="btn-modern btn-ghost">
+                <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
+            </a>
+        </div>
+
+        <div class="card-modern overflow-hidden">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead style="background-color: var(--neutral-100);">
+                        <tr>
+                            <th class="p-4 border-0 font-semibold text-muted">Property</th>
+                            <th class="p-4 border-0 font-semibold text-muted">Owner</th>
+                            <th class="p-4 border-0 font-semibold text-muted">Price</th>
+                            <th class="p-4 border-0 font-semibold text-muted text-end">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% for(let listing of listings) { %>
+                            <tr class="align-middle">
+                                <td class="p-4 border-bottom" style="border-color: var(--neutral-200);">
+                                    <div class="flex-center" style="justify-content: flex-start;">
+                                        <div class="rounded-lg bg-neutral-200 me-3"
+                                            style="width: 60px; height: 40px; overflow: hidden;">
+                                            <% if(listing.images && listing.images.length > 0 && listing.images[0].url) { %>
+                                                <img src="<%= listing.images[0].url %>" alt=""
+                                                    style="width: 100%; height: 100%; object-fit: cover;">
+                                                <% } else { %>
+                                                    <div class="flex-center h-100 text-muted"><i
+                                                            class="fas fa-image"></i></div>
+                                                    <% } %>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0 text-truncate" style="max-width: 200px;">
+                                                <%= listing.title %>
+                                            </h6>
+                                            <small class="text-muted">
+                                                <%= listing.location %>
+                                            </small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="p-4 border-bottom" style="border-color: var(--neutral-200);">
+                                    <div class="flex-center" style="justify-content: flex-start;">
+                                        <div class="rounded-circle bg-neutral-200 flex-center me-2"
+                                            style="width: 30px; height: 30px; font-size: 0.8rem;">
+                                            <%= listing.owner ? listing.owner.username[0].toUpperCase() : '?' %>
+                                        </div>
+                                        <span>
+                                            <%= listing.owner ? listing.owner.username : 'Unknown' %>
+                                        </span>
+                                    </div>
+                                </td>
+                                <td class="p-4 border-bottom font-medium" style="border-color: var(--neutral-200);">
+                                    &#8377; <%= listing.price.toLocaleString("en-IN") %>
+                                </td>
+                                <td class="p-4 border-bottom text-end" style="border-color: var(--neutral-200);">
+                                    <a href="/listings/<%= listing._id %>" class="btn-modern btn-sm btn-ghost me-1"
+                                        target="_blank">
+                                        <i class="fas fa-external-link-alt"></i>
+                                    </a>
+                                    <form action="/admin/listings/<%= listing._id %>/delete" method="POST"
+                                        class="d-inline"
+                                        onsubmit="return confirm('Are you sure you want to delete this listing?');">
+                                        <button class="btn-modern btn-sm"
+                                            style="color: var(--error-500); background: rgba(193, 53, 21, 0.1);">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>

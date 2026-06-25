@@ -1,0 +1,416 @@
+<% layout("/layouts/boilerplate") %>
+
+    <style>
+        /* Existing styles omitted for brevity – keep them */
+        /* Focus outline for accessibility */
+        input:focus,
+        button:focus {
+            outline: 2px solid var(--primary-600);
+            outline-offset: 2px;
+        }
+
+        /* Margin tweak for divider */
+        .divider {
+            margin-top: var(--space-4);
+        }
+
+        /* Inline validation feedback */
+        .invalid-feedback {
+            color: var(--error-500);
+            display: none;
+        }
+
+        input.is-invalid+.invalid-feedback {
+            display: block;
+        }
+    </style>
+    <style>
+        /* Auth Page Styling */
+        .auth-container {
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-8) var(--space-4);
+            margin: calc(var(--space-6) * -1);
+        }
+
+        .auth-card {
+            background: var(--neutral-50);
+            border-radius: var(--radius-2xl);
+            box-shadow: var(--shadow-2xl);
+            overflow: hidden;
+            max-width: 1000px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        /* Left Side - Form */
+        .auth-form-section {
+            padding: var(--space-12) var(--space-8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .auth-logo {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            margin-bottom: var(--space-8);
+            color: var(--primary-500);
+            text-decoration: none;
+        }
+
+        .auth-logo i {
+            font-size: var(--text-3xl);
+        }
+
+        .auth-logo span {
+            font-family: var(--font-display);
+            font-size: var(--text-2xl);
+            font-weight: var(--font-bold);
+        }
+
+        .auth-title {
+            font-family: var(--font-display);
+            font-size: var(--text-4xl);
+            font-weight: var(--font-bold);
+            color: var(--neutral-800);
+            margin-bottom: var(--space-2);
+        }
+
+        .auth-subtitle {
+            color: var(--neutral-600);
+            margin-bottom: var(--space-8);
+            font-size: var(--text-base);
+        }
+
+        .auth-form .form-group {
+            margin-bottom: var(--space-6);
+        }
+
+        .auth-form label {
+            display: block;
+            font-size: var(--text-sm);
+            font-weight: var(--font-semibold);
+            color: var(--neutral-700);
+            margin-bottom: var(--space-2);
+        }
+
+        .auth-form input {
+            width: 100%;
+            padding: var(--space-3) var(--space-4);
+            border: 2px solid var(--neutral-200);
+            border-radius: var(--radius-lg);
+            font-size: var(--text-base);
+            transition: all var(--transition-base);
+            outline: none;
+        }
+
+        .auth-form input:focus {
+            border-color: var(--primary-500);
+            box-shadow: 0 0 0 4px rgba(255, 56, 92, 0.1);
+        }
+
+        .form-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-6);
+            font-size: var(--text-sm);
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+
+        .remember-me input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+        }
+
+        .forgot-password {
+            color: var(--primary-500);
+            text-decoration: none;
+            font-weight: var(--font-medium);
+        }
+
+        .forgot-password:hover {
+            color: var(--primary-600);
+            text-decoration: underline;
+        }
+
+        .btn-auth {
+            width: 100%;
+            padding: var(--space-4);
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-lg);
+            font-size: var(--text-base);
+            font-weight: var(--font-semibold);
+            cursor: pointer;
+            transition: all var(--transition-base);
+            margin-bottom: var(--space-6);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-auth:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-auth:active {
+            transform: translateY(0);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: var(--space-6) 0;
+            color: var(--neutral-400);
+            font-size: var(--text-sm);
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--neutral-200);
+        }
+
+        .divider::before {
+            margin-right: var(--space-3);
+        }
+
+        .divider::after {
+            margin-left: var(--space-3);
+        }
+
+        .social-login {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-3);
+            margin-bottom: var(--space-6);
+        }
+
+        .btn-social {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-2);
+            padding: var(--space-3);
+            background: var(--neutral-100);
+            border: 2px solid var(--neutral-200);
+            border-radius: var(--radius-lg);
+            font-size: var(--text-sm);
+            font-weight: var(--font-medium);
+            cursor: pointer;
+            transition: all var(--transition-base);
+        }
+
+        .btn-social:hover {
+            background: var(--neutral-200);
+            border-color: var(--neutral-300);
+        }
+
+        .btn-social i {
+            font-size: var(--text-lg);
+        }
+
+        .auth-footer {
+            text-align: center;
+            color: var(--neutral-600);
+            font-size: var(--text-sm);
+        }
+
+        .auth-footer a {
+            color: var(--primary-500);
+            font-weight: var(--font-semibold);
+            text-decoration: none;
+        }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Right Side - Illustration */
+        .auth-illustration {
+            background: var(--gradient-primary);
+            padding: var(--space-12);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-illustration::before {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            top: -200px;
+            right: -200px;
+        }
+
+        .auth-illustration::after {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            bottom: -150px;
+            left: -150px;
+        }
+
+        .illustration-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        .illustration-icon {
+            font-size: 120px;
+            margin-bottom: var(--space-8);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .illustration-title {
+            font-family: var(--font-display);
+            font-size: var(--text-3xl);
+            font-weight: var(--font-bold);
+            margin-bottom: var(--space-4);
+        }
+
+        .illustration-text {
+            font-size: var(--text-lg);
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .auth-card {
+                grid-template-columns: 1fr;
+            }
+
+            .auth-illustration {
+                display: none;
+            }
+
+            .auth-form-section {
+                padding: var(--space-8) var(--space-6);
+            }
+
+            .social-login {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+    <div class="auth-container">
+        <div class="auth-card">
+            <!-- Left Side - Login Form -->
+            <div class="auth-form-section">
+                <a href="/listings" class="auth-logo">
+                    <i class="fa-solid fa-compass"></i>
+                    <span>Wanderlust</span>
+                </a>
+
+                <h1 class="auth-title">Welcome back</h1>
+                <p class="auth-subtitle">Log in to continue your journey</p>
+
+                <% if ((errormsg && errormsg.length> 0) || (error && error.length > 0)) { %>
+                    <div class="alert alert-danger d-flex align-items-start mb-4" role="alert"
+                        style="border-left: 4px solid #dc3545;">
+                        <i class="fa-solid fa-circle-exclamation me-3 mt-1" style="font-size: 1.2rem;"></i>
+                        <div class="flex-grow-1">
+                            <strong>Login Failed</strong>
+                            <p class="mb-2 mt-1">
+                                <%= errormsg || error %>
+                            </p>
+                            <a href="/forgot-password" class="text-decoration-none">
+                                <i class="fa-solid fa-key me-1"></i>Reset your password
+                            </a>
+                        </div>
+                    </div>
+                    <% } %>
+
+                        <form action="/login" method="POST" class="auth-form needs-validation" novalidate>
+                            <div class="form-group">
+                                <label for="username">Username</label>
+                                <input type="text" id="username" name="username" placeholder="Enter your username"
+                                    required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <input type="password" id="password" name="password" placeholder="Enter your password"
+                                    required>
+                            </div>
+
+                            <div class="form-footer">
+                                <label class="remember-me">
+                                    <input type="checkbox" name="remember">
+                                    <span>Remember me</span>
+                                </label>
+                                <a href="/forgot-password" class="forgot-password">Forgot password?</a>
+                            </div>
+
+                            <button type="submit" class="btn-auth">Log in</button>
+                        </form>
+
+                        <div class="divider">or continue with</div>
+
+                        <div class="social-login">
+                            <button class="btn-social" type="button">
+                                <i class="fa-brands fa-google" style="color: #DB4437;"></i>
+                                Google
+                            </button>
+                            <button class="btn-social" type="button">
+                                <i class="fa-brands fa-facebook" style="color: #1877F2;"></i>
+                                Facebook
+                            </button>
+                        </div>
+
+                        <div class="auth-footer">
+                            Don't have an account? <a href="/signup">Sign up</a>
+                        </div>
+            </div>
+
+            <!-- Right Side - Illustration -->
+            <div class="auth-illustration">
+                <div class="illustration-content">
+                    <div class="illustration-icon">🌍</div>
+                    <h2 class="illustration-title">Explore the World</h2>
+                    <p class="illustration-text">
+                        Discover amazing places to stay and unforgettable experiences around the globe.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/js/login.js"></script>

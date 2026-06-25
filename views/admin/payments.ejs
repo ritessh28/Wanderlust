@@ -1,0 +1,89 @@
+<% layout("/layouts/boilerplate") %>
+
+    <div class="container py-4 animate-fade-in">
+        <div class="flex-between mb-6">
+            <div>
+                <h2 class="mb-2">Manage Payments</h2>
+                <p class="text-muted">Monitor platform transactions and guest payments</p>
+            </div>
+            <a href="/admin" class="btn-modern btn-ghost">
+                <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
+            </a>
+        </div>
+
+        <div class="card-modern overflow-hidden">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead style="background-color: var(--neutral-100);">
+                        <tr>
+                            <th class="p-4 border-0 font-semibold text-muted">User</th>
+                            <th class="p-4 border-0 font-semibold text-muted">Amount</th>
+                            <th class="p-4 border-0 font-semibold text-muted">Status</th>
+                            <th class="p-4 border-0 font-semibold text-muted">Method</th>
+                            <th class="p-4 border-0 font-semibold text-muted">Transaction ID</th>
+                            <th class="p-4 border-0 font-semibold text-muted text-end">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% for(let payment of payments) { %>
+                            <tr class="align-middle">
+                                <td class="p-4 border-bottom" style="border-color: var(--neutral-200);">
+                                    <div class="flex-center" style="justify-content: flex-start;">
+                                        <div class="rounded-circle bg-neutral-200 flex-center me-2"
+                                            style="width: 30px; height: 30px; font-size: 0.8rem;">
+                                            <%= payment.user ? payment.user.username[0].toUpperCase() : '?' %>
+                                        </div>
+                                        <span>
+                                            <%= payment.user ? payment.user.username : 'Unknown' %>
+                                        </span>
+                                    </div>
+                                </td>
+                                <td class="p-4 border-bottom font-medium" style="border-color: var(--neutral-200);">
+                                    &#8377; <%= payment.amount ? payment.amount.toLocaleString("en-IN") : '0' %>
+                                </td>
+                                <td class="p-4 border-bottom" style="border-color: var(--neutral-200);">
+                                    <% if(payment.status === 'completed') { %>
+                                        <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: var(--success-500);">
+                                            <i class="fas fa-check-circle me-1"></i> Completed
+                                        </span>
+                                    <% } else if(payment.status === 'failed') { %>
+                                        <span class="badge" style="background: rgba(239, 68, 68, 0.1); color: var(--error-500);">
+                                            <i class="fas fa-times-circle me-1"></i> Failed
+                                        </span>
+                                    <% } else { %>
+                                        <span class="badge" style="background: rgba(245, 158, 11, 0.1); color: var(--warning-500);">
+                                            <i class="fas fa-clock me-1"></i> Pending
+                                        </span>
+                                    <% } %>
+                                </td>
+                                <td class="p-4 border-bottom" style="border-color: var(--neutral-200);">
+                                    <span class="text-sm text-muted uppercase"><%= payment.method %></span>
+                                </td>
+                                <td class="p-4 border-bottom" style="border-color: var(--neutral-200);">
+                                    <code class="text-xs"><%= payment.transactionId || 'N/A' %></code>
+                                </td>
+                                <td class="p-4 border-bottom text-end" style="border-color: var(--neutral-200);">
+                                    <form action="/admin/payments/<%= payment._id %>/delete" method="POST"
+                                        class="d-inline"
+                                        onsubmit="return confirm('Are you sure you want to delete this payment record?');">
+                                        <button class="btn-modern btn-sm"
+                                            style="color: var(--error-500); background: rgba(193, 53, 21, 0.1);">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <% } %>
+                        <% if(payments.length === 0) { %>
+                            <tr>
+                                <td colspan="6" class="p-10 text-center text-muted">
+                                    <i class="fas fa-credit-card text-neutral-300 mb-2" style="font-size: 2rem;"></i>
+                                    <p>No transactions found to monitor.</p>
+                                </td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>

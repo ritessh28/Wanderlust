@@ -1,0 +1,222 @@
+<% layout("/layouts/boilerplate") %>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            <div class="card-modern p-4 p-md-5 reveal reveal-up">
+                <div class="text-center mb-5">
+                    <h2 class="display-5 font-bold text-primary mb-2">Edit Listing</h2>
+                    <p class="text-muted">Update your property details to keep them accurate and appealing</p>
+                    <div style="width: 60px; height: 4px; background: var(--gradient-primary); margin: 1rem auto; border-radius: 2px;"></div>
+                </div>
+
+                <form method="post" action="/listings/<%= Listing._id%>?_method=PUT" novalidate class="needs-validation" enctype="multipart/form-data">
+                    <!-- Basic Information Section -->
+                    <div class="mb-5">
+                        <h5 class="mb-4 font-bold"><i class="fa-solid fa-circle-info text-primary me-2"></i> Basic Information</h5>
+                        
+                        <div class="mb-4">
+                            <label for="title" class="form-label font-semibold">Listing Title</label>
+                            <input type="text" name="title" id="title" value="<%= Listing.title %>" placeholder="e.g., Luxury Beachfront Villa in Goa"
+                                class="input-modern" required>
+                            <div class="invalid-feedback">Please enter a catchy title for your listing.</div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="description" class="form-label font-semibold">Description</label>
+                            <textarea name="description" id="description" placeholder="Describe the unique features, atmosphere, and surroundings of your property..." 
+                                class="input-modern" style="min-height: 120px;" required><%= Listing.description %></textarea>
+                            <div class="invalid-feedback">Please provide a description.</div>
+                        </div>
+                    </div>
+
+                    <!-- Media Section -->
+                    <div class="mb-5">
+                        <h5 class="mb-4 font-bold"><i class="fa-solid fa-images text-primary me-2"></i> Property Photos</h5>
+                        
+                        <!-- Existing Photos -->
+                        <div class="mb-4">
+                            <label class="form-label font-semibold d-block mb-3">Manage Existing Photos</label>
+                            <div class="row g-3">
+                                <% if (Listing.images && Listing.images.length > 0) { %>
+                                    <% Listing.images.forEach(function(img, i) { %>
+                                        <div class="col-4 col-md-3">
+                                            <div class="position-relative group">
+                                                <img src="<%= img.url.replace('/upload', '/upload/w_300,h_300,c_fill') %>" 
+                                                    class="img-fluid rounded-lg shadow-sm" alt="listing image">
+                                                <div class="form-check mt-2">
+                                                    <input class="form-check-input" type="checkbox" name="deleteImages[]" value="<%= img._id %>" id="deleteImg-<%= i %>">
+                                                    <label class="form-check-label small text-danger" for="deleteImg-<%= i %>">Delete</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <% }) %>
+                                <% } %>
+                                <% if (Listing.image && Listing.image.url) { %>
+                                    <div class="col-4 col-md-3">
+                                        <div class="position-relative">
+                                            <img src="<%= Listing.image.url.replace('/upload', '/upload/w_300,h_300,c_fill') %>" 
+                                                class="img-fluid rounded-lg shadow-sm" alt="legacy image">
+                                            <div class="form-check mt-2">
+                                                <input class="form-check-input" type="checkbox" name="deleteImages[]" value="<%= Listing.image._id %>" id="deleteImg-legacy">
+                                                <label class="form-check-label small text-danger" for="deleteImg-legacy">Delete</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <% } %>
+                            </div>
+                        </div>
+
+                        <!-- Upload New Photos -->
+                        <div class="mb-3">
+                            <label for="images" class="form-label font-semibold">Upload New Photos</label>
+                            <input type="file" name="images" id="images" class="input-modern" multiple>
+                            <small class="text-muted d-block mt-2">Add more high-quality photos to your listing.</small>
+                        </div>
+                    </div>
+
+                    <!-- Pricing Section -->
+                    <div class="mb-5">
+                        <h5 class="mb-4 font-bold"><i class="fa-solid fa-tag text-primary me-2"></i> Pricing</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="price" class="form-label font-semibold">Price per Night</label>
+                                <div class="input-group" style="margin-bottom: 0;">
+                                    <span class="input-group-text bg-white border-end-0" style="border: 2px solid var(--neutral-200); border-right: none; border-radius: 12px 0 0 12px;">₹</span>
+                                    <input type="number" name="price" id="price" value="<%= Listing.price %>" placeholder="1200" class="input-modern" 
+                                        style="border-left: none; border-radius: 0 12px 12px 0;" required>
+                                    <div class="invalid-feedback">Please enter a valid price.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Property Details Section -->
+                    <div class="mb-5">
+                        <h5 class="mb-4 font-bold"><i class="fa-solid fa-house-chimney text-primary me-2"></i> Property Details</h5>
+                        <div class="row g-3">
+                            <div class="col-6 col-md-3">
+                                <label for="guests" class="form-label font-semibold">Guests</label>
+                                <input type="number" name="guests" id="guests" class="input-modern" required min="1" value="<%= Listing.guests || 1 %>">
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <label for="bedrooms" class="form-label font-semibold">Bedrooms</label>
+                                <input type="number" name="bedrooms" id="bedrooms" class="input-modern" required min="1" value="<%= Listing.bedrooms || 1 %>">
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <label for="beds" class="form-label font-semibold">Beds</label>
+                                <input type="number" name="beds" id="beds" class="input-modern" required min="1" value="<%= Listing.beds || 1 %>">
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <label for="bathrooms" class="form-label font-semibold">Bathrooms</label>
+                                <input type="number" name="bathrooms" id="bathrooms" class="input-modern" required min="1" value="<%= Listing.bathrooms || 1 %>">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Amenities Section -->
+                    <div class="mb-5">
+                        <h5 class="mb-4 font-bold"><i class="fa-solid fa-sparkles text-primary me-2"></i> Amenities</h5>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                            <% const availableAmenities = [
+                                { id: 'wifi', val: 'WiFi', icon: 'fa-wifi' },
+                                { id: 'ac', val: 'AC', icon: 'fa-snowflake' },
+                                { id: 'tv', val: 'TV', icon: 'fa-tv' },
+                                { id: 'kitchen', val: 'Kitchen', icon: 'fa-kitchen-set' },
+                                { id: 'parking', val: 'Parking', icon: 'fa-car' },
+                                { id: 'pool', val: 'Pool', icon: 'fa-person-swimming' }
+                            ]; %>
+                            <% availableAmenities.forEach(amenity => { %>
+                                <div class="form-check custom-amenity-check">
+                                    <input class="form-check-input d-none" type="checkbox" name="amenities" value="<%= amenity.val %>" 
+                                        id="amenity-<%= amenity.id %>" <%= Listing.amenities && Listing.amenities.includes(amenity.val) ? 'checked' : '' %>>
+                                    <label class="amenity-card" for="amenity-<%= amenity.id %>">
+                                        <i class="fa-solid <%= amenity.icon %> mb-2"></i>
+                                        <span><%= amenity.val %></span>
+                                    </label>
+                                </div>
+                            <% }) %>
+                        </div>
+                    </div>
+
+                    <!-- Location Section -->
+                    <div class="mb-5">
+                        <h5 class="mb-4 font-bold"><i class="fa-solid fa-location-dot text-primary me-2"></i> Location Details</h5>
+                        <div class="row">
+                            <div class="col-md-8 mb-4 mb-md-0">
+                                <label for="location" class="form-label font-semibold">City / Location</label>
+                                <input type="text" name="location" id="location" value="<%= Listing.location %>" placeholder="e.g., Jaipur, Rajasthan" class="input-modern" required>
+                                <div class="invalid-feedback">Please enter the location.</div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="country" class="form-label font-semibold">Country</label>
+                                <input type="text" name="country" id="country" value="<%= Listing.country %>" placeholder="India" class="input-modern" required>
+                                <div class="invalid-feedback">Please enter the country.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-5">
+                        <button type="submit" class="btn-modern btn-primary btn-lg w-100 py-3">
+                            <i class="fa-solid fa-save me-2"></i> Save Changes
+                        </button>
+                        <a href="/listings/<%= Listing._id %>" class="btn-modern btn-ghost mt-2">Cancel and Go Back</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .amenity-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        background: var(--neutral-100);
+        border: 2px solid var(--neutral-200);
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        transition: all var(--transition-base);
+        height: 100%;
+        text-align: center;
+    }
+
+    .amenity-card i {
+        font-size: 1.5rem;
+        color: var(--neutral-500);
+        transition: all var(--transition-base);
+    }
+
+    .amenity-card span {
+        font-size: var(--text-sm);
+        font-weight: var(--font-semibold);
+        color: var(--neutral-600);
+    }
+
+    .form-check-input:checked + .amenity-card {
+        background: rgba(255, 56, 92, 0.05);
+        border-color: var(--primary-500);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .form-check-input:checked + .amenity-card i {
+        color: var(--primary-500);
+        transform: scale(1.1);
+    }
+
+    .form-check-input:checked + .amenity-card span {
+        color: var(--primary-600);
+    }
+
+    .amenity-card:hover {
+        background: var(--neutral-200);
+    }
+
+    .custom-amenity-check {
+        padding-left: 0;
+        margin-bottom: 0;
+    }
+</style>

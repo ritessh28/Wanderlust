@@ -1,0 +1,445 @@
+<% layout("/layouts/boilerplate") %>
+
+  <style>
+    /* Auth Page Styling */
+    .auth-container {
+      min-height: 80vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-8) var(--space-4);
+      margin: calc(var(--space-6) * -1);
+    }
+
+    .auth-card {
+      background: var(--neutral-50);
+      border-radius: var(--radius-2xl);
+      box-shadow: var(--shadow-2xl);
+      overflow: hidden;
+      max-width: 1000px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    /* Left Side - Form */
+    .auth-form-section {
+      padding: var(--space-12) var(--space-8);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .auth-logo {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      margin-bottom: var(--space-8);
+      color: var(--primary-500);
+      text-decoration: none;
+    }
+
+    .auth-logo i {
+      font-size: var(--text-3xl);
+    }
+
+    .auth-logo span {
+      font-family: var(--font-display);
+      font-size: var(--text-2xl);
+      font-weight: var(--font-bold);
+    }
+
+    .auth-title {
+      font-family: var(--font-display);
+      font-size: var(--text-4xl);
+      font-weight: var(--font-bold);
+      color: var(--neutral-800);
+      margin-bottom: var(--space-2);
+    }
+
+    .auth-subtitle {
+      color: var(--neutral-600);
+      margin-bottom: var(--space-8);
+      font-size: var(--text-base);
+    }
+
+    .auth-form .form-group {
+      margin-bottom: var(--space-6);
+    }
+
+    .auth-form label {
+      display: block;
+      font-size: var(--text-sm);
+      font-weight: var(--font-semibold);
+      color: var(--neutral-700);
+      margin-bottom: var(--space-2);
+    }
+
+    .auth-form input {
+      width: 100%;
+      padding: var(--space-3) var(--space-4);
+      border: 2px solid var(--neutral-200);
+      border-radius: var(--radius-lg);
+      font-size: var(--text-base);
+      transition: all var(--transition-base);
+      outline: none;
+    }
+
+    .auth-form input:focus {
+      border-color: var(--primary-500);
+      box-shadow: 0 0 0 4px rgba(255, 56, 92, 0.1);
+    }
+
+    .auth-form input.invalid {
+      border-color: var(--error-500);
+    }
+
+    .password-strength {
+      margin-top: var(--space-2);
+      height: 4px;
+      background: var(--neutral-200);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      display: none;
+    }
+
+    .password-strength.active {
+      display: block;
+    }
+
+    .password-strength-bar {
+      height: 100%;
+      width: 0;
+      transition: all var(--transition-base);
+    }
+
+    .password-strength-bar.weak {
+      width: 33%;
+      background: var(--error-500);
+    }
+
+    .password-strength-bar.medium {
+      width: 66%;
+      background: var(--warning-500);
+    }
+
+    .password-strength-bar.strong {
+      width: 100%;
+      background: var(--success-500);
+    }
+
+    .terms-checkbox {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-2);
+      margin-bottom: var(--space-6);
+      font-size: var(--text-sm);
+      color: var(--neutral-600);
+    }
+
+    .terms-checkbox input[type="checkbox"] {
+      width: auto;
+      margin-top: 3px;
+    }
+
+    .terms-checkbox a {
+      color: var(--primary-500);
+      text-decoration: none;
+    }
+
+    .terms-checkbox a:hover {
+      text-decoration: underline;
+    }
+
+    .btn-auth {
+      width: 100%;
+      padding: var(--space-4);
+      background: var(--gradient-primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius-lg);
+      font-size: var(--text-base);
+      font-weight: var(--font-semibold);
+      cursor: pointer;
+      transition: all var(--transition-base);
+      margin-bottom: var(--space-6);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn-auth:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .btn-auth:active {
+      transform: translateY(0);
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      margin: var(--space-6) 0;
+      color: var(--neutral-400);
+      font-size: var(--text-sm);
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--neutral-200);
+    }
+
+    .divider::before {
+      margin-right: var(--space-3);
+    }
+
+    .divider::after {
+      margin-left: var(--space-3);
+    }
+
+    .social-login {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-3);
+      margin-bottom: var(--space-6);
+    }
+
+    .btn-social {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      padding: var(--space-3);
+      background: var(--neutral-100);
+      border: 2px solid var(--neutral-200);
+      border-radius: var(--radius-lg);
+      font-size: var(--text-sm);
+      font-weight: var(--font-medium);
+      cursor: pointer;
+      transition: all var(--transition-base);
+    }
+
+    .btn-social:hover {
+      background: var(--neutral-200);
+      border-color: var(--neutral-300);
+    }
+
+    .btn-social i {
+      font-size: var(--text-lg);
+    }
+
+    .auth-footer {
+      text-align: center;
+      color: var(--neutral-600);
+      font-size: var(--text-sm);
+    }
+
+    .auth-footer a {
+      color: var(--primary-500);
+      font-weight: var(--font-semibold);
+      text-decoration: none;
+    }
+
+    .auth-footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Right Side - Illustration */
+    .auth-illustration {
+      background: var(--gradient-ocean);
+      padding: var(--space-12);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .auth-illustration::before {
+      content: '';
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      top: -200px;
+      right: -200px;
+    }
+
+    .auth-illustration::after {
+      content: '';
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      bottom: -150px;
+      left: -150px;
+    }
+
+    .illustration-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+    }
+
+    .illustration-icon {
+      font-size: 120px;
+      margin-bottom: var(--space-8);
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-20px);
+      }
+    }
+
+    .illustration-title {
+      font-family: var(--font-display);
+      font-size: var(--text-3xl);
+      font-weight: var(--font-bold);
+      margin-bottom: var(--space-4);
+    }
+
+    .illustration-text {
+      font-size: var(--text-lg);
+      opacity: 0.9;
+      line-height: 1.6;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .auth-card {
+        grid-template-columns: 1fr;
+      }
+
+      .auth-illustration {
+        display: none;
+      }
+
+      .auth-form-section {
+        padding: var(--space-8) var(--space-6);
+      }
+
+      .social-login {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <div class="auth-container">
+    <div class="auth-card">
+      <!-- Left Side - Signup Form -->
+      <div class="auth-form-section">
+        <a href="/listings" class="auth-logo">
+          <i class="fa-solid fa-compass"></i>
+          <span>Wanderlust</span>
+        </a>
+
+        <h1 class="auth-title">Create an account</h1>
+        <p class="auth-subtitle">Start your journey with Wanderlust</p>
+
+        <form action="/signup" method="POST" class="auth-form needs-validation" novalidate>
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" placeholder="Choose a username" required>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+          </div>
+
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Create a password" required>
+            <div class="password-strength">
+              <div class="password-strength-bar"></div>
+            </div>
+          </div>
+
+          <label class="terms-checkbox">
+            <input type="checkbox" required>
+            <span>
+              I agree to the <a href="/terms">Terms of Service</a> and
+              <a href="/privacy">Privacy Policy</a>
+            </span>
+          </label>
+
+          <button type="submit" class="btn-auth">Sign up</button>
+        </form>
+
+        <div class="divider">or sign up with</div>
+
+        <div class="social-login">
+          <button class="btn-social" type="button">
+            <i class="fa-brands fa-google" style="color: #DB4437;"></i>
+            Google
+          </button>
+          <button class="btn-social" type="button">
+            <i class="fa-brands fa-facebook" style="color: #1877F2;"></i>
+            Facebook
+          </button>
+        </div>
+
+        <div class="auth-footer">
+          Already have an account? <a href="/login">Log in</a>
+        </div>
+      </div>
+
+      <!-- Right Side - Illustration -->
+      <div class="auth-illustration">
+        <div class="illustration-content">
+          <div class="illustration-icon">✨</div>
+          <h2 class="illustration-title">Join Our Community</h2>
+          <p class="illustration-text">
+            Connect with travelers worldwide and discover your next adventure.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Password Strength Indicator
+    const passwordInput = document.getElementById('password');
+    const strengthBar = document.querySelector('.password-strength-bar');
+    const strengthContainer = document.querySelector('.password-strength');
+
+    passwordInput.addEventListener('input', function () {
+      const password = this.value;
+
+      if (password.length === 0) {
+        strengthContainer.classList.remove('active');
+        return;
+      }
+
+      strengthContainer.classList.add('active');
+
+      let strength = 0;
+      if (password.length >= 8) strength++;
+      if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+      if (/\d/.test(password)) strength++;
+      if (/[^a-zA-Z\d]/.test(password)) strength++;
+
+      strengthBar.className = 'password-strength-bar';
+      if (strength <= 2) {
+        strengthBar.classList.add('weak');
+      } else if (strength === 3) {
+        strengthBar.classList.add('medium');
+      } else {
+        strengthBar.classList.add('strong');
+      }
+    });
+  </script>

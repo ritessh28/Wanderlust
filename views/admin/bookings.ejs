@@ -1,0 +1,98 @@
+<% layout("/layouts/boilerplate") %>
+
+    <div class="container py-4 animate-fade-in">
+        <div class="flex-between mb-6">
+            <div>
+                <h2 class="mb-2">Manage Bookings</h2>
+                <p class="text-muted">Track and manage reservations</p>
+            </div>
+            <a href="/admin" class="btn-modern btn-ghost">
+                <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
+            </a>
+        </div>
+
+        <div class="card-modern overflow-hidden">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead style="background-color: var(--neutral-100);">
+                        <tr>
+                            <th class="p-4 border-0 font-semibold text-muted">Listing</th>
+                            <th class="p-4 border-0 font-semibold text-muted">Guest</th>
+                            <th class="p-4 border-0 font-semibold text-muted">Dates</th>
+                            <th class="p-4 border-0 font-semibold text-muted">Status</th>
+                            <th class="p-4 border-0 font-semibold text-muted text-end">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% for(let booking of bookings) { %>
+                            <tr class="align-middle">
+                                <td class="p-4 border-bottom" style="border-color: var(--neutral-200);">
+                                    <div class="flex-center" style="justify-content: flex-start;">
+                                        <div class="rounded-lg bg-neutral-200 me-3 flex-center"
+                                            style="width: 40px; height: 40px;">
+                                            <i class="fas fa-home text-muted"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0 text-truncate" style="max-width: 200px;">
+                                                <%= booking.listing ? booking.listing.title : 'Deleted Listing' %>
+                                            </h6>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="p-4 border-bottom" style="border-color: var(--neutral-200);">
+                                    <div class="flex-center" style="justify-content: flex-start;">
+                                        <div class="rounded-circle bg-neutral-200 flex-center me-2"
+                                            style="width: 30px; height: 30px; font-size: 0.8rem;">
+                                            <%= booking.user ? booking.user.username[0].toUpperCase() : '?' %>
+                                        </div>
+                                        <span>
+                                            <%= booking.user ? booking.user.username : 'Unknown' %>
+                                        </span>
+                                    </div>
+                                </td>
+                                <td class="p-4 border-bottom" style="border-color: var(--neutral-200);">
+                                    <div class="d-flex flex-column">
+                                        <small class="text-muted">Check-in: <span class="text-dark font-medium">
+                                                <%= booking.checkIn ? new Date(booking.checkIn).toLocaleDateString()
+                                                    : 'N/A' %>
+                                            </span></small>
+                                        <small class="text-muted">Check-out: <span class="text-dark font-medium">
+                                                <%= booking.checkOut ? new Date(booking.checkOut).toLocaleDateString()
+                                                    : 'N/A' %>
+                                            </span></small>
+                                        <% let nights = booking.nights || (booking.checkIn && booking.checkOut ? Math.ceil((new Date(booking.checkOut) - new Date(booking.checkIn)) / (1000 * 60 * 60 * 24)) : 0); %>
+                                        <small class="text-primary font-bold"><%= nights %> <%= nights === 1 ? 'night' : 'nights' %></small>
+                                    </div>
+                                </td>
+                                <td class="p-4 border-bottom" style="border-color: var(--neutral-200);">
+                                    <% if (booking.paymentStatus === 'paid') { %>
+                                        <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: var(--success-500);">
+                                            <i class="fas fa-check-circle me-1"></i> Paid
+                                        </span>
+                                    <% } else if (booking.paymentStatus === 'failed') { %>
+                                        <span class="badge" style="background: rgba(239, 68, 68, 0.1); color: var(--error-500);">
+                                            <i class="fas fa-times-circle me-1"></i> Failed
+                                        </span>
+                                    <% } else { %>
+                                        <span class="badge" style="background: rgba(245, 158, 11, 0.1); color: var(--warning-500);">
+                                            <i class="fas fa-clock me-1"></i> Pending
+                                        </span>
+                                    <% } %>
+                                </td>
+                                <td class="p-4 border-bottom text-end" style="border-color: var(--neutral-200);">
+                                    <form action="/admin/bookings/<%= booking._id %>/delete" method="POST"
+                                        class="d-inline"
+                                        onsubmit="return confirm('Are you sure you want to delete this booking?');">
+                                        <button class="btn-modern btn-sm"
+                                            style="color: var(--error-500); background: rgba(193, 53, 21, 0.1);">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
